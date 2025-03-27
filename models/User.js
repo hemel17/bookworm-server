@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import { hashPassword } from "../utils/bcrypt.js";
 
 const userSchema = new Schema(
   {
@@ -21,7 +22,6 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: true,
-      minLength: 8,
       select: false,
     },
     role: {
@@ -59,6 +59,27 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
+// * hash password
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+
+  try {
+    this.password = await hashPassword(this.password);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
+// * generate verification code
+userSchema.methods.generateVerificationCode = function () {
+  const verificationCode = Math.floor(10000 + Math.random() * 90000);
+  this.verificationCode = verificationCode;
+  this.verificationCodeExpire = new Date(Date.now() + 5 * 60 * 1000);
+
+  return verificationCode;
+};
 
 const User = model("User", userSchema);
 
