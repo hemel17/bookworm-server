@@ -1,5 +1,5 @@
 import createError from "../utils/error.js";
-import { registerService } from "../services/auth.js";
+import { registerService, verificationService } from "../services/auth.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 
 const registerController = asyncHandler(async (req, res, next) => {
@@ -28,4 +28,42 @@ const registerController = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { registerController };
+const verificationController = asyncHandler(async (req, res, next) => {
+  const { email } = req.params;
+  const { verificationCode } = req.body;
+
+  if (!email) {
+    return next(createError("Something went wrong. Please try again.", 400));
+  }
+
+  if (!verificationCode) {
+    return next(createError("Enter your verification code.", 400));
+  }
+
+  try {
+    const { user, token, refreshToken } = await verificationService(
+      email,
+      verificationCode
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.json({
+      success: true,
+      message: "Account verified.",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export { registerController, verificationController };

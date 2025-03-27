@@ -26,8 +26,8 @@ const errorHandler = (err, _req, res, _next) => {
   }
 
   if (err.code === 11000) {
-    errorStatus = 400;
     errorMessage = `This ${Object.keys(err.keyValue)} is already in use!`;
+    errorStatus = 400;
   }
 
   res.status(errorStatus).json({

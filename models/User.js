@@ -12,7 +12,6 @@ const userSchema = new Schema(
       type: String,
       required: true,
       trim: true,
-      unique: true,
       lowercase: true,
       match: [
         /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
@@ -33,6 +32,9 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    bookTitle: String,
+    borrowDate: Date,
+    dueDate: Date,
     borrowedBooks: [
       {
         bookId: {
@@ -45,9 +47,6 @@ const userSchema = new Schema(
         },
       },
     ],
-    bookTitle: String,
-    borrowDate: Date,
-    dueDate: Date,
     avatar: {
       public_id: String,
       url: String,
@@ -56,6 +55,7 @@ const userSchema = new Schema(
     verificationCodeExpire: Date,
     resetPasswordToken: String,
     resetPasswordTokenExpire: Date,
+    refreshToken: String,
   },
   { timestamps: true }
 );
