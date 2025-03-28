@@ -8,6 +8,10 @@ const findUserByProperty = (key, value, verified) => {
   return User.find({ [key]: value, verified });
 };
 
+const findUserWithPassword = (email) => {
+  return User.findOne({ email, verified: true }).select("+password");
+};
+
 const createNewUser = (name, email, password) => {
   const user = new User({ name, email, password });
   return user.save();
@@ -20,4 +24,9 @@ const deleteUnverifiedUserEntries = (id, email) => {
     verified: false,
   });
 };
-export { findUserByProperty, createNewUser, deleteUnverifiedUserEntries };
+export {
+  findUserByProperty,
+  findUserWithPassword,
+  createNewUser,
+  deleteUnverifiedUserEntries,
+};

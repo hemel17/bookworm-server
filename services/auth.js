@@ -3,9 +3,11 @@ import {
   findUserByProperty,
   createNewUser,
   deleteUnverifiedUserEntries,
+  findUserWithPassword,
 } from "./user.js";
 import sendVerificationCode from "../utils/sendVerificationCode.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
+import { comparePassword } from "../utils/bcrypt.js";
 
 const registerService = async (name, email, password) => {
   const user = await findUserByProperty("email", email, true);
@@ -88,4 +90,34 @@ const verificationService = async (email, verificationCode) => {
   return { user, token, refreshToken };
 };
 
-export { registerService, verificationService };
+const loginService = async (email, password) => {
+  const user = await findUserWithPassword(email);
+
+  if (!user) {
+    throw createError("User not found.", 404);
+  }
+
+  const isPasswordMatch = comparePassword(password, user.password);
+
+  if (!isPasswordMatch) {
+    throw createError("Incorrect password.", 400);
+  }
+
+  const payload = {
+    _id: user._id,
+    name: user.name,
+    email: user.email,
+    verified: user.verified,
+    role: user.role,
+  };
+
+  const token = await generateAccessToken(payload, process.env.SECRET_KEY);
+  const refreshToken = await generateRefreshToken(
+    payload,
+    process.env.SECRET_KEY
+  );
+
+  return { user, token, refreshToken };
+};
+
+export { registerService, verificationService, loginService };

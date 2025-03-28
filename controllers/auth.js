@@ -1,5 +1,9 @@
 import createError from "../utils/error.js";
-import { registerService, verificationService } from "../services/auth.js";
+import {
+  loginService,
+  registerService,
+  verificationService,
+} from "../services/auth.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
 
 const registerController = asyncHandler(async (req, res, next) => {
@@ -66,4 +70,34 @@ const verificationController = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { registerController, verificationController };
+const loginController = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return next(createError("Email and Password are required.", 400));
+  }
+
+  try {
+    const { user, token, refreshToken } = await loginService(email, password);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: false,
+    });
+
+    res.json({
+      success: true,
+      message: "Login successful",
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export { registerController, verificationController, loginController };
