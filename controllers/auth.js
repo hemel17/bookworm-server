@@ -79,22 +79,23 @@ const loginController = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    const { user, token, refreshToken } = await loginService(email, password);
+    const { token, refreshToken } = await loginService(email, password);
 
     res.cookie("token", token, {
       httpOnly: true,
       secure: false,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: false,
+      maxAge: 1 * 24 * 60 * 60 * 1000,
     });
 
     res.json({
       success: true,
       message: "Login successful",
-      user,
     });
   } catch (error) {
     next(error);
@@ -103,8 +104,9 @@ const loginController = asyncHandler(async (req, res, next) => {
 
 const logoutController = asyncHandler(async (req, res, next) => {
   try {
-    // todo : refresh token set to null
-    await logoutService("aaa");
+    const userId = req.user._id;
+
+    await logoutService(userId);
 
     res.clearCookie("token");
     res.clearCookie("refreshToken");

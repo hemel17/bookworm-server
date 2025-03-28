@@ -117,10 +117,18 @@ const loginService = async (email, password) => {
     process.env.SECRET_KEY
   );
 
-  return { user, token, refreshToken };
+  user.refreshToken = refreshToken;
+
+  await user.save({ validateModifiedOnly: true });
+
+  return { token, refreshToken };
 };
 
-// todo : refresh token set to null
-const logoutService = async (userId) => {};
+const logoutService = async (userId) => {
+  const user = await findUserByProperty("_id", userId);
+
+  user.refreshToken = null;
+  await user.save({ validateModifiedOnly: true });
+};
 
 export { registerService, verificationService, loginService, logoutService };
