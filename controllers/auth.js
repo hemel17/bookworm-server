@@ -1,6 +1,7 @@
 import createError from "../utils/error.js";
 import {
   loginService,
+  logoutService,
   registerService,
   verificationService,
 } from "../services/auth.js";
@@ -100,4 +101,25 @@ const loginController = asyncHandler(async (req, res, next) => {
   }
 });
 
-export { registerController, verificationController, loginController };
+const logoutController = asyncHandler(async (req, res, next) => {
+  try {
+    // todo : refresh token set to null
+    await logoutService("aaa");
+
+    res.clearCookie("token");
+    res.clearCookie("refreshToken");
+
+    res.status(200).json({
+      message: "Logout successful",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export {
+  registerController,
+  verificationController,
+  loginController,
+  logoutController,
+};

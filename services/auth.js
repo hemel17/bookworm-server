@@ -97,7 +97,7 @@ const loginService = async (email, password) => {
     throw createError("User not found.", 404);
   }
 
-  const isPasswordMatch = comparePassword(password, user.password);
+  const isPasswordMatch = await comparePassword(password, user.password);
 
   if (!isPasswordMatch) {
     throw createError("Incorrect password.", 400);
@@ -120,4 +120,7 @@ const loginService = async (email, password) => {
   return { user, token, refreshToken };
 };
 
-export { registerService, verificationService, loginService };
+// todo : refresh token set to null
+const logoutService = async (userId) => {};
+
+export { registerService, verificationService, loginService, logoutService };
