@@ -119,9 +119,23 @@ const logoutController = asyncHandler(async (req, res, next) => {
   }
 });
 
+const profileController = asyncHandler(async (req, res, next) => {
+  const user = req.user;
+
+  try {
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export {
   registerController,
   verificationController,
   loginController,
   logoutController,
+  profileController,
 };
