@@ -172,6 +172,29 @@ const resetPasswordService = async (token, enteredPassword) => {
   await user.save({ validateModifiedOnly: true });
 };
 
+const changePasswordService = async (email, password, newPassword) => {
+  const user = await findUserWithPassword(email);
+
+  if (!user) {
+    throw createError("User not found.", 404);
+  }
+
+  const isPasswordMatch = await comparePassword(password, user.password);
+
+  if (!isPasswordMatch) {
+    throw createError("Current password is incorrect.", 400);
+  }
+
+  const isPasswordSame = await comparePassword(newPassword, user.password);
+
+  if (isPasswordSame) {
+    throw createError("Old password can't be new password", 400);
+  }
+
+  user.password = newPassword;
+  await user.save({ validateModifiedOnly: true });
+};
+
 export {
   registerService,
   verificationService,
@@ -179,4 +202,5 @@ export {
   logoutService,
   forgotPasswordService,
   resetPasswordService,
+  changePasswordService,
 };

@@ -1,5 +1,6 @@
 import createError from "../utils/error.js";
 import {
+  changePasswordService,
   forgotPasswordService,
   loginService,
   logoutService,
@@ -189,6 +190,39 @@ const resetPasswordController = asyncHandler(async (req, res, next) => {
   }
 });
 
+const changePasswordController = asyncHandler(async (req, res, next) => {
+  const { email } = req.user;
+  const { password, newPassword, confirmPassword } = req.body;
+
+  if (!email) {
+    return next(createError("Invalid user.", 400));
+  }
+
+  if (!password || !newPassword || !confirmPassword) {
+    return next(createError("All fields are required.", 400));
+  }
+
+  if (newPassword.length < 8) {
+    return next(
+      createError("Password must be at least 8 characters long.", 400)
+    );
+  }
+
+  if (newPassword !== confirmPassword) {
+    return next(createError("Password didn't match.", 400));
+  }
+
+  try {
+    await changePasswordService(email, password, newPassword);
+    res.status(200).json({
+      success: true,
+      message: "Password changed successfully.",
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export {
   registerController,
   verificationController,
@@ -197,4 +231,5 @@ export {
   profileController,
   forgotPasswordController,
   resetPasswordController,
+  changePasswordController,
 };
