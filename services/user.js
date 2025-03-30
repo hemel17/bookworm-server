@@ -1,11 +1,15 @@
 import User from "../models/User.js";
 
-const findUserByProperty = (key, value, verified) => {
-  if (key === "_id") {
-    return User.findById(value);
-  }
+const findVerifiedUserById = (id) => {
+  return User.findById(id).where("verified").equals(true);
+};
 
-  return User.find({ [key]: value, verified });
+const findVerifiedUserByEmail = (email) => {
+  return User.findOne({ email, verified: true });
+};
+
+const findUsersByEmail = (email) => {
+  return User.find({ email, verified: false });
 };
 
 const findUserWithPassword = (email) => {
@@ -25,7 +29,9 @@ const deleteUnverifiedUserEntries = (id, email) => {
   });
 };
 export {
-  findUserByProperty,
+  findVerifiedUserById,
+  findVerifiedUserByEmail,
+  findUsersByEmail,
   findUserWithPassword,
   createNewUser,
   deleteUnverifiedUserEntries,

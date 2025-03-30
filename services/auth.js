@@ -1,26 +1,27 @@
 import createError from "../utils/error.js";
 import {
-  findUserByProperty,
   createNewUser,
   deleteUnverifiedUserEntries,
   findUserWithPassword,
+  findVerifiedUserByEmail,
+  findUsersByEmail,
+  findVerifiedUserById,
 } from "./user.js";
-import sendVerificationCode from "../utils/sendVerificationCode.js";
+import {
+  sendResetPasswordToken,
+  sendVerificationCode,
+} from "../utils/sendCode.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { comparePassword } from "../utils/bcrypt.js";
 
 const registerService = async (name, email, password) => {
-  const user = await findUserByProperty("email", email, true);
+  const user = await findVerifiedUserByEmail(email);
 
-  if (user && user.length > 0) {
+  if (user) {
     throw createError("User already exists!", 400);
   }
 
-  const registrationAttemptsByUser = await findUserByProperty(
-    "email",
-    email,
-    false
-  );
+  const registrationAttemptsByUser = await findUsersByEmail(email);
 
   if (registrationAttemptsByUser.length >= 5) {
     throw createError(
@@ -41,7 +42,7 @@ const registerService = async (name, email, password) => {
 };
 
 const verificationService = async (email, verificationCode) => {
-  const userAllEntries = await findUserByProperty("email", email, false).sort({
+  const userAllEntries = await findUsersByEmail(email).sort({
     createdAt: -1,
   });
 
@@ -125,10 +126,34 @@ const loginService = async (email, password) => {
 };
 
 const logoutService = async (userId) => {
-  const user = await findUserByProperty("_id", userId);
+  const user = await findVerifiedUserById(userId);
 
   user.refreshToken = null;
   await user.save({ validateModifiedOnly: true });
 };
 
-export { registerService, verificationService, loginService, logoutService };
+const forgotPasswordService = async (email) => {
+  const user = await findVerifiedUserByEmail(email);
+
+  if (!user) {
+    throw createError("Invalid email.", 404);
+  }
+
+  const token = await user.generateResetPasswordToken();
+
+  console.log(token);
+
+  await user.save({ validateModifiedOnly: true });
+
+  const resetLink = `http://localhost:5173/forgot-password/${token}`;
+
+  await sendResetPasswordToken(resetLink, email);
+};
+
+export {
+  registerService,
+  verificationService,
+  loginService,
+  logoutService,
+  forgotPasswordService,
+};

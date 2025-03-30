@@ -19,4 +19,33 @@ const verificationCodeTemplate = (verificationCode) => {
     `;
 };
 
-export { verificationCodeTemplate };
+const resetPasswordTemplate = (resetLink) => {
+  return `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+        <h2 style="color: #d32f2f; text-align: center;">Reset Your Password</h2>
+        <p style="font-size: 16px; color: #333;">Dear User,</p>
+        <p style="font-size: 16px; color: #333;">We received a request to reset your password. Click the button below to proceed:</p>
+        
+        <div style="text-align: center; margin: 20px 0;">
+          <a href="${resetLink}" style="display: inline-block; font-size: 18px; font-weight: bold; color: white; background-color: #d32f2f; padding: 12px 24px; border-radius: 5px; text-decoration: none;">
+            Reset Password
+          </a>
+        </div>
+
+        <p style="font-size: 16px; color: #333;">If the button above doesn't work, you can also reset your password by clicking the following link:</p>
+        <p style="word-break: break-all; text-align: center;">
+          <a href="${resetLink}" style="color: #d32f2f; text-decoration: none;">${resetLink}</a>
+        </p>
+
+        <p style="font-size: 16px; color: #d32f2f; font-weight: bold;">Do not share this link with anyone.</p>
+        <p style="font-size: 16px; color: #333;">If you did not request a password reset, please ignore this email.</p>
+
+        <footer style="margin-top: 20px; text-align: center; font-size: 14px; color: #999;">
+          <p>Thank you,<br>Bookworm Team</p>
+          <p style="font-size: 12px; color: #aaa;">This is an automated message. Please do not reply to this email.</p>
+        </footer>
+      </div>
+    `;
+};
+
+export { verificationCodeTemplate, resetPasswordTemplate };

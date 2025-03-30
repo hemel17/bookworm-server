@@ -1,7 +1,7 @@
 import asyncHandler from "./asyncHandler.js";
 import createError from "../utils/error.js";
 import jwt from "jsonwebtoken";
-import { findUserByProperty } from "../services/user.js";
+import { findVerifiedUserById } from "../services/user.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 
 const isAuthenticated = asyncHandler(async (req, res, next) => {
@@ -21,7 +21,7 @@ const isAuthenticated = asyncHandler(async (req, res, next) => {
         return next(createError("Invalid token.", 401));
       }
 
-      const user = await findUserByProperty("_id", decoded._id);
+      const user = await findVerifiedUserById(decoded._id);
 
       if (!user) {
         return next(createError("User no longer exists.", 401));
@@ -52,7 +52,7 @@ async function tryRefreshToken(req, res, next) {
           return next(createError("Invalid refresh token.", 401));
         }
 
-        const user = await findUserByProperty("_id", decoded._id);
+        const user = await findVerifiedUserById(decoded._id);
 
         if (!user || user.refreshToken !== refreshToken) {
           return next(createError("Invalid refresh token", 401));

@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { hashPassword } from "../utils/bcrypt.js";
+import crypto from "crypto";
 
 const userSchema = new Schema(
   {
@@ -79,6 +80,20 @@ userSchema.methods.generateVerificationCode = function () {
   this.verificationCodeExpire = new Date(Date.now() + 5 * 60 * 1000);
 
   return verificationCode;
+};
+
+// * generate reset password token
+userSchema.methods.generateResetPasswordToken = function () {
+  const token = crypto.randomBytes(10).toString("hex");
+
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+
+  this.resetPasswordTokenExpire = new Date(Date.now() + 5 * 60 * 1000);
+
+  return token;
 };
 
 const User = model("User", userSchema);

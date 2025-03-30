@@ -1,6 +1,7 @@
 import { Router } from "express";
 const authRouter = Router();
 import {
+  forgotPasswordController,
   loginController,
   logoutController,
   profileController,
@@ -14,5 +15,6 @@ authRouter.post("/verify/:email", verificationController);
 authRouter.post("/login", loginController);
 authRouter.get("/logout", isAuthenticated, logoutController);
 authRouter.get("/profile", isAuthenticated, profileController);
+authRouter.post("/password/forgot", forgotPasswordController);
 
 export default authRouter;

@@ -1,5 +1,6 @@
 import createError from "../utils/error.js";
 import {
+  forgotPasswordService,
   loginService,
   logoutService,
   registerService,
@@ -132,10 +133,30 @@ const profileController = asyncHandler(async (req, res, next) => {
   }
 });
 
+const forgotPasswordController = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return next(createError("Please enter your email.", 400));
+  }
+
+  try {
+    await forgotPasswordService(email);
+
+    res.status(200).json({
+      success: true,
+      message: `Reset password link has sent to ${email}`,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export {
   registerController,
   verificationController,
   loginController,
   logoutController,
   profileController,
+  forgotPasswordController,
 };
