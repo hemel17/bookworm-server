@@ -4,6 +4,7 @@ import {
   loginService,
   logoutService,
   registerService,
+  resetPasswordService,
   verificationService,
 } from "../services/auth.js";
 import asyncHandler from "../middlewares/asyncHandler.js";
@@ -141,11 +142,47 @@ const forgotPasswordController = asyncHandler(async (req, res, next) => {
   }
 
   try {
-    await forgotPasswordService(email);
+    const token = await forgotPasswordService(email);
 
     res.status(200).json({
       success: true,
       message: `Reset password link has sent to ${email}`,
+      token,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+const resetPasswordController = asyncHandler(async (req, res, next) => {
+  const token = req.params.token;
+  const { password, confirmPassword } = req.body;
+
+  if (!token) {
+    return next(createError("Invalid url.", 400));
+  }
+
+  if (!password || !confirmPassword) {
+    return next(
+      createError("Password and Confirm Password are required.", 400)
+    );
+  }
+
+  if (password.length < 8) {
+    return next(
+      createError("Password must be at least 8 characters long.", 400)
+    );
+  }
+
+  if (password !== confirmPassword) {
+    return next(createError("Password didn't match", 400));
+  }
+
+  try {
+    await resetPasswordService(token, password);
+    res.status(200).json({
+      success: true,
+      message: "Password reset successful.",
     });
   } catch (error) {
     next(error);
@@ -159,4 +196,5 @@ export {
   logoutController,
   profileController,
   forgotPasswordController,
+  resetPasswordController,
 };

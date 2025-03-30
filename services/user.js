@@ -8,6 +8,10 @@ const findVerifiedUserByEmail = (email) => {
   return User.findOne({ email, verified: true });
 };
 
+const findVerifiedUserByToken = (resetToken) => {
+  return User.findOne({ resetPasswordToken: resetToken, verified: true });
+};
+
 const findUsersByEmail = (email) => {
   return User.find({ email, verified: false });
 };
@@ -31,6 +35,7 @@ const deleteUnverifiedUserEntries = (id, email) => {
 export {
   findVerifiedUserById,
   findVerifiedUserByEmail,
+  findVerifiedUserByToken,
   findUsersByEmail,
   findUserWithPassword,
   createNewUser,

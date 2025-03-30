@@ -6,6 +6,7 @@ import {
   findVerifiedUserByEmail,
   findUsersByEmail,
   findVerifiedUserById,
+  findVerifiedUserByToken,
 } from "./user.js";
 import {
   sendResetPasswordToken,
@@ -13,6 +14,7 @@ import {
 } from "../utils/sendCode.js";
 import { generateAccessToken, generateRefreshToken } from "../utils/jwt.js";
 import { comparePassword } from "../utils/bcrypt.js";
+import crypto from "crypto";
 
 const registerService = async (name, email, password) => {
   const user = await findVerifiedUserByEmail(email);
@@ -36,7 +38,7 @@ const registerService = async (name, email, password) => {
 
   await newUser.save();
 
-  await sendVerificationCode(verificationCode, email);
+  sendVerificationCode(verificationCode, email);
 
   return newUser;
 };
@@ -141,13 +143,33 @@ const forgotPasswordService = async (email) => {
 
   const token = await user.generateResetPasswordToken();
 
-  console.log(token);
-
   await user.save({ validateModifiedOnly: true });
 
   const resetLink = `http://localhost:5173/forgot-password/${token}`;
 
-  await sendResetPasswordToken(resetLink, email);
+  sendResetPasswordToken(resetLink, email);
+
+  return token;
+};
+
+const resetPasswordService = async (token, enteredPassword) => {
+  const resetToken = crypto.createHash("sha256").update(token).digest("hex");
+
+  const user = await findVerifiedUserByToken(resetToken);
+
+  if (!user) {
+    throw createError("Invalid token", 400);
+  }
+
+  if (new Date() > user.resetPasswordTokenExpire) {
+    throw createError("This token has expired.", 400);
+  }
+
+  user.password = enteredPassword;
+  user.resetPasswordToken = null;
+  user.resetPasswordTokenExpire = null;
+
+  await user.save({ validateModifiedOnly: true });
 };
 
 export {
@@ -156,4 +178,5 @@ export {
   loginService,
   logoutService,
   forgotPasswordService,
+  resetPasswordService,
 };

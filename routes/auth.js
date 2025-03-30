@@ -6,6 +6,7 @@ import {
   logoutController,
   profileController,
   registerController,
+  resetPasswordController,
   verificationController,
 } from "../controllers/auth.js";
 import { isAuthenticated } from "../middlewares/authenticate.js";
@@ -16,5 +17,6 @@ authRouter.post("/login", loginController);
 authRouter.get("/logout", isAuthenticated, logoutController);
 authRouter.get("/profile", isAuthenticated, profileController);
 authRouter.post("/password/forgot", forgotPasswordController);
+authRouter.post("/password/reset/:token", resetPasswordController);
 
 export default authRouter;
