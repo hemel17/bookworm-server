@@ -12,13 +12,16 @@ import {
 } from "../controllers/auth.js";
 import { isAuthenticated } from "../middlewares/authenticate.js";
 
-authRouter.post("/register", registerController);
-authRouter.post("/verify/:email", verificationController);
-authRouter.post("/login", loginController);
-authRouter.get("/logout", isAuthenticated, logoutController);
-authRouter.get("/profile", isAuthenticated, profileController);
-authRouter.post("/password/forgot", forgotPasswordController);
-authRouter.post("/password/reset/:token", resetPasswordController);
-authRouter.post("/password/change", isAuthenticated, changePasswordController);
+authRouter
+  .post("/register", registerController)
+  .post("/verify/:email", verificationController)
+  .post("/login", loginController)
+  .post("/password/forgot", forgotPasswordController);
+authRouter
+  .get("/logout", isAuthenticated, logoutController)
+  .get("/profile", isAuthenticated, profileController);
+authRouter
+  .put("/password/reset/:token", resetPasswordController)
+  .put("/password/change", isAuthenticated, changePasswordController);
 
 export default authRouter;
