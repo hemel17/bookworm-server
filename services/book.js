@@ -33,7 +33,13 @@ const getAllBooksService = async () => {
   return await Book.find();
 };
 
-const deleteBookService = () => {};
+const deleteBookService = async (bookId) => {
+  const deleteBook = await Book.findByIdAndDelete(bookId);
+
+  if (!deleteBook) {
+    throw createError("Couldn't delete this book", 400);
+  }
+};
 
 export {
   addBookService,

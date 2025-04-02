@@ -1,6 +1,7 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import {
   addBookService,
+  deleteBookService,
   getAllBooksService,
   getSingleBookService,
 } from "../services/book.js";
@@ -60,7 +61,17 @@ const getAllBooksController = asyncHandler(async (req, res, next) => {
   }
 });
 
-const deleteBookController = asyncHandler(async (req, res, next) => {});
+const deleteBookController = asyncHandler(async (req, res, next) => {
+  const id = req.params.id;
+
+  try {
+    await deleteBookService(id);
+
+    res.sendStatus(204);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export {
   addBookController,
