@@ -29,7 +29,10 @@ const getSingleBookService = async (bookId) => {
   return book;
 };
 
-const getAllBooksService = () => {};
+const getAllBooksService = async () => {
+  return await Book.find();
+};
+
 const deleteBookService = () => {};
 
 export {

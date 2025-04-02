@@ -1,5 +1,9 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
-import { addBookService, getSingleBookService } from "../services/book.js";
+import {
+  addBookService,
+  getAllBooksService,
+  getSingleBookService,
+} from "../services/book.js";
 import createError from "../utils/error.js";
 
 const addBookController = asyncHandler(async (req, res, next) => {
@@ -43,7 +47,19 @@ const getSingleBookController = asyncHandler(async (req, res, next) => {
   }
 });
 
-const getAllBooksController = asyncHandler(async (req, res, next) => {});
+const getAllBooksController = asyncHandler(async (req, res, next) => {
+  try {
+    const books = await getAllBooksService();
+
+    res.status(200).json({
+      success: true,
+      books,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 const deleteBookController = asyncHandler(async (req, res, next) => {});
 
 export {
