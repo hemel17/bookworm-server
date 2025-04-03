@@ -40,7 +40,7 @@ const userSchema = new Schema(
       {
         bookId: {
           type: Schema.Types.ObjectId,
-          ref: "borrow",
+          ref: "Borrow",
         },
         returned: {
           type: Boolean,
