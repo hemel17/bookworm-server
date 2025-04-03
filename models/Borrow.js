@@ -36,7 +36,7 @@ const borrowSchema = new Schema(
     },
     returnDate: {
       type: Date,
-      required: true,
+      default: null,
     },
     fine: {
       type: Number,

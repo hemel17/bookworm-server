@@ -42,6 +42,9 @@ const userSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: "Borrow",
         },
+        bookTitle: String,
+        borrowedDate: Date,
+        dueDate: Date,
         returned: {
           type: Boolean,
           default: false,
