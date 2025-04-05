@@ -95,4 +95,12 @@ const returnBorrowedBookService = async (bookId, userId) => {
   return borrow;
 };
 
-export { recordBorrowedBookService, returnBorrowedBookService };
+const borrowedBooksForAdminService = async () => {
+  return await Borrow.find();
+};
+
+export {
+  recordBorrowedBookService,
+  returnBorrowedBookService,
+  borrowedBooksForAdminService,
+};

@@ -1,5 +1,6 @@
 import asyncHandler from "../middlewares/asyncHandler.js";
 import {
+  borrowedBooksForAdminService,
   recordBorrowedBookService,
   returnBorrowedBookService,
 } from "../services/borrow.js";
@@ -58,8 +59,21 @@ const borrowedBooksController = asyncHandler(async (req, res, next) => {
   }
 });
 
+const borrowedBooksForAdminController = asyncHandler(async (req, res, next) => {
+  try {
+    const bookList = await borrowedBooksForAdminService();
+    res.status(200).json({
+      success: true,
+      bookList,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export {
   recordBorrowedBookController,
   returnBorrowedBookController,
   borrowedBooksController,
+  borrowedBooksForAdminController,
 };
