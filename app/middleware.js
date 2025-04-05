@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
+import expressFileupload from "express-fileupload";
 
 const middleware = [
   morgan("dev"),
@@ -13,6 +14,10 @@ const middleware = [
   cookieParser(),
   express.json(),
   express.urlencoded({ extended: true }),
+  expressFileupload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+  }),
 ];
 
 export default middleware;

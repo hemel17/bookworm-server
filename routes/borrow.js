@@ -18,7 +18,7 @@ borrowRouter
   .get(
     "/borrowed-by-users",
     isAuthenticated,
-    isAuthorized("user"),
+    isAuthorized("admin"),
     borrowedBooksForAdminController
   );
 
