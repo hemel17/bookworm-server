@@ -104,7 +104,10 @@ const isAuthorized = (role) => {
   return (req, _res, next) => {
     if (role !== req.user.role) {
       return next(
-        createError(`${role} doesn't have access to perform this task`, 400)
+        createError(
+          `'${req.user.role}' doesn't have access to perform this task`,
+          400
+        )
       );
     }
     next();
