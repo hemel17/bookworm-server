@@ -6,6 +6,7 @@ import route from "./route.js";
 import routes from "../routes/index.js";
 import { notFoundHandler, errorHandler } from "./error.js";
 import { v2 as cloudinary } from "cloudinary";
+import notifyUsers from "../automation/notifyUsers.js";
 const app = express();
 
 // * middlewares
@@ -21,6 +22,9 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_CLIENT_API,
   api_secret: process.env.CLOUDINARY_CLIENT_SECRET,
 });
+
+// * automation
+notifyUsers();
 
 // * error handlers
 app.use(notFoundHandler);

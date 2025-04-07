@@ -48,4 +48,28 @@ const resetPasswordTemplate = (resetLink) => {
     `;
 };
 
-export { verificationCodeTemplate, resetPasswordTemplate };
+const bookReturnReminderTemplate = (userName, bookTitle, dueDate) => {
+  return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9;">
+      <h2 style="color: #1976d2; text-align: center;">Reminder: Book Due for Return</h2>
+      <p style="font-size: 16px; color: #333;">Dear ${userName},</p>
+      <p style="font-size: 16px; color: #333;">This is a friendly reminder that the book you borrowed, <strong>"${bookTitle}"</strong>, is due for return on <strong>${dueDate}</strong>, which is in 24 hours.</p>
+      
+      <p style="font-size: 16px; color: #333;">To avoid any late fees, please return the book by the due date.</p>
+
+      <p style="font-size: 16px; color: #1976d2; font-weight: bold;">Thank you for being a valued member of our community!</p>
+      <p style="font-size: 16px; color: #333;">If you have any questions or need further assistance, feel free to reach out to us.</p>
+
+      <footer style="margin-top: 20px; text-align: center; font-size: 14px; color: #999;">
+        <p>Thank you,<br>Bookworm Team</p>
+        <p style="font-size: 12px; color: #aaa;">This is an automated message. Please do not reply to this email.</p>
+      </footer>
+    </div>
+  `;
+};
+
+export {
+  verificationCodeTemplate,
+  resetPasswordTemplate,
+  bookReturnReminderTemplate,
+};
