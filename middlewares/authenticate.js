@@ -80,13 +80,15 @@ async function tryRefreshToken(req, res, next) {
 
         res.cookie("token", newToken, {
           httpOnly: true,
-          secure: false,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 1 * 24 * 60 * 60 * 1000,
         });
 
         res.cookie("refreshToken", newRefreshToken, {
           httpOnly: true,
-          secure: false,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
           maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 

@@ -8,6 +8,7 @@ import { notFoundHandler, errorHandler } from "./error.js";
 import { v2 as cloudinary } from "cloudinary";
 import notifyUsers from "../automation/notifyUsers.js";
 import removeUnverifiedAccounts from "../automation/removeUnverifiedAccount.js";
+import sendGetReq from "../automation/sendGetReq.js";
 const app = express();
 
 // * middlewares
@@ -27,6 +28,7 @@ cloudinary.config({
 // * automation
 notifyUsers();
 removeUnverifiedAccounts();
+sendGetReq();
 
 // * error handlers
 app.use(notFoundHandler);
